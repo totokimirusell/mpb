@@ -1,0 +1,309 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   기획예산처 (Ministry of Planning and Budget) 대국민 포털 스타일시트
+   Korean Government Design System & Accessibility Compliant
+   ========================================================================== */
+
+:root {
+  --gov-primary: #0a2540;        /* 대한민국 정부 상징 깊은 남색 */
+  --gov-primary-hover: #071727;
+  --gov-secondary: #1a56db;      /* 신뢰의 블루 */
+  --gov-secondary-light: #e8f0fe;
+  --gov-accent: #059669;         /* 재정 건전성 에메랄드 */
+  --gov-gold: #d97706;           /* 국가 번영 골드 */
+  --gov-text-dark: #1e293b;
+  --gov-text-muted: #64748b;
+  --gov-bg-light: #f8fafc;
+  --gov-border: #e2e8f0;
+  --gov-font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  
+  --base-font-size: 16px;
+}
+
+/* 글자 크기 조절 옵션 */
+body.font-sm { font-size: 14px; }
+body.font-md { font-size: 16px; }
+body.font-lg { font-size: 18px; }
+body.font-xl { font-size: 20px; }
+
+/* 고대비 모드 (High Contrast Mode) */
+body.high-contrast {
+  --gov-primary: #000000;
+  --gov-secondary: #0044cc;
+  --gov-bg-light: #ffffff;
+  --gov-text-dark: #000000;
+  --gov-text-muted: #222222;
+  --gov-border: #000000;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+body.high-contrast .bg-slate-50,
+body.high-contrast .bg-slate-100,
+body.high-contrast .bg-blue-50 {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+body.high-contrast button,
+body.high-contrast .card {
+  border: 2px solid #000000 !important;
+}
+
+/* 기본 리셋 및 폰트 설정 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: var(--base-font-size);
+}
+
+body {
+  font-family: var(--gov-font-family);
+  color: var(--gov-text-dark);
+  background-color: #ffffff;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* 접근성 바로가기 건너뛰기 링크 (Skip to Content) */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  background: #1a56db;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  z-index: 99999;
+  font-weight: 700;
+  border-radius: 0 0 8px 8px;
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #fbbf24;
+}
+
+/* 정부 헤더 & 상단 바 */
+.gov-topbar {
+  background-color: #0c1c2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.korea-emblem-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+/* 내비게이션 바 고정 스타일 */
+.main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--gov-border);
+  transition: all 0.25s ease-in-out;
+}
+
+.main-nav.scrolled {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+}
+
+/* 히어로 섹션 그라디언트 & 패턴 */
+.hero-gradient {
+  background: linear-gradient(135deg, #091e36 0%, #0d2e53 50%, #174276 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-gradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* 공공 카드 디자인 */
+.gov-card {
+  background: #ffffff;
+  border: 1px solid var(--gov-border);
+  border-radius: 1rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.gov-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.08);
+  border-color: #93c5fd;
+}
+
+/* 탭 버튼 스타일 */
+.tab-btn {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  color: #1a56db;
+  font-weight: 700;
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #1a56db;
+  border-radius: 3px 3px 0 0;
+}
+
+/* 타임라인 단계 디자인 */
+.timeline-step {
+  position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 2rem;
+  right: -1rem;
+  width: 2rem;
+  height: 2px;
+  background-color: #cbd5e1;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .timeline-step:not(:last-child)::after {
+    display: none;
+  }
+}
+
+/* 영수증 (Tax Receipt) 스타일 */
+.tax-receipt {
+  background: #ffffff;
+  background-image: 
+    radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 16px 16px;
+  border: 1px dashed #94a3b8;
+  position: relative;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.receipt-jagged-top {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(45deg, transparent, transparent 6px, #ffffff 6px, #ffffff 12px);
+}
+
+.receipt-jagged-bottom {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(135deg, transparent, transparent 6px, #ffffff 6px, #ffffff 12px);
+}
+
+/* 알기 쉬운 비유 말풍선 박스 */
+.analogy-box {
+  background: linear-gradient(to right, #eff6ff, #f8fafc);
+  border-left: 4px solid #3b82f6;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+/* 퀴즈 정답 피드백 효과 */
+.quiz-option {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.quiz-option:hover {
+  transform: scale(1.02);
+}
+.quiz-option.correct {
+  background-color: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #15803d !important;
+}
+.quiz-option.wrong {
+  background-color: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+}
+
+/* 인쇄 스타일 */
+@media print {
+  .no-print, header, footer, .gov-topbar, .floating-actions {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+    font-size: 12pt;
+  }
+  .tax-receipt {
+    border: 1px solid #000;
+    box-shadow: none;
+    max-width: 100% !important;
+  }
+}
+
+/* 모달 애니메이션 */
+.modal-overlay {
+  transition: opacity 0.25s ease-in-out;
+}
+.modal-content {
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+
+/* 롤링 뉴스 티커 애니메이션 */
+@keyframes ticker {
+  0% { transform: translateY(100%); opacity: 0; }
+  10% { transform: translateY(0); opacity: 1; }
+  90% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
+
+.ticker-item {
+  animation: ticker 4s infinite ease-in-out;
+}
+
+/* 맞춤형 스크롤바 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}

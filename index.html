@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기획예산처 | 국민과 함께 설계하는 든든한 나라살림</title>
+  <meta name="description" content="기획예산처의 주요 업무, 국가 예산 편성 과정, 한눈에 보는 나라살림 및 국민참여예산 제도를 일반 국민의 눈높이에서 알기 쉽게 소개하는 공식 대국민 포털입니다.">
+  
+  <!-- Pretendard Web Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gov: {
+              navy: '#0a2540',
+              blue: '#1a56db',
+              sky: '#e8f0fe',
+              emerald: '#059669',
+              gold: '#d97706'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-md">
+
+  <!-- 웹접근성 본문 건너뛰기 링크 -->
+  <a href="#main-content" class="skip-link">본문 바로가기 (Skip to Content)</a>
+
+  <!-- 대한민국 정부 상단 공통 바 -->
+  <aside class="gov-topbar py-1.5 px-4 lg:px-8" aria-label="대한민국 정부 공식 안내">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="korea-emblem-badge flex items-center gap-2">
+        <!-- 대한민국 정부 태극 상징 SVG -->
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 14.76 3.12 17.26 4.93 19.07L12 12C12 9.24 14.24 7 17 7C18.66 7 20.12 7.81 21.07 9.07C21.67 10 22 10.96 22 12C22 6.48 17.52 2 12 2Z" fill="#CD2E3A"/>
+          <path d="M12 22C17.52 22 22 17.52 22 12C22 9.24 20.88 6.74 19.07 4.93L12 12C12 14.76 9.76 17 7 17C5.34 17 3.88 16.19 2.93 14.93C2.33 14 2 13.04 2 12C2 17.52 6.48 22 12 22Z" fill="#0047A0"/>
+        </svg>
+        <span>대한민국 정부 공식 기관</span>
+        <span class="text-slate-400">|</span>
+        <span class="text-slate-300 hidden sm:inline">알기 쉬운 재정 정보 대국민 서비스</span>
+      </div>
+
+      <!-- 우측 웹접근성 컨트롤 (글자 크기 & 고대비) -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 bg-slate-800/60 px-2 py-0.5 rounded border border-slate-700/80">
+          <span class="text-slate-300 text-xs">글자크기:</span>
+          <button id="btn-font-dec" class="px-1.5 py-0.5 text-xs text-slate-300 hover:text-white" title="글자 축소" aria-label="글자 축소">가-</button>
+          <span id="font-size-indicator" class="text-xs text-amber-400 font-mono px-1">100%</span>
+          <button id="btn-font-inc" class="px-1.5 py-0.5 text-xs text-slate-300 hover:text-white" title="글자 확대" aria-label="글자 확대">가+</button>
+          <button id="btn-font-reset" class="px-1.5 py-0.5 text-xs text-slate-400 hover:text-white" title="글자 기본값 복원">기본</button>
+        </div>
+
+        <button id="btn-contrast-toggle" class="flex items-center gap-1 bg-slate-800/60 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-700/80 text-xs transition-colors" aria-pressed="false">
+          <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+          <span>고대비</span>
+        </button>
+
+        <a href="#section-waste" class="text-amber-400 hover:underline flex items-center gap-1 font-semibold">
+          <i data-lucide="alert-triangle" class="w-3 h-3"></i> 예산낭비신고
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 실시간 롤링 공지 배너 -->
+  <div class="bg-blue-900 text-white text-xs py-2 px-4 border-b border-blue-800" role="region" aria-label="주요 알림">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <span class="bg-blue-700 text-blue-100 font-bold px-2 py-0.5 rounded text-[11px] shrink-0">새소식</span>
+        <div id="gov-ticker-text" class="font-medium text-blue-50 transition-opacity duration-300 truncate">
+          📢 2026년도 대한민국 정부 예산안 677.4조 원 확정 편성
+        </div>
+      </div>
+      <a href="https://www.openfiscaldata.go.kr" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center gap-1 text-blue-200 hover:text-white text-xs shrink-0 font-medium">
+        열린재정 포털 바로가기 <i data-lucide="external-link" class="w-3 h-3"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- 메인 헤더 & 네비게이션 -->
+  <header class="main-nav">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3.5 flex items-center justify-between">
+      <!-- 로고 -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-blue-600 rounded-lg p-1">
+        <div class="w-10 h-10 rounded-xl bg-gov-navy flex items-center justify-center text-white shadow-md group-hover:bg-blue-700 transition-colors">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"/>
+            <path d="M5 21V7l7-4 7 4v14"/>
+            <path d="M9 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v11"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl lg:text-2xl font-black text-slate-900 tracking-tight group-hover:text-blue-700 transition-colors">기획예산처</h1>
+            <span class="text-[11px] font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded-md">공식 포털</span>
+          </div>
+          <span class="text-xs text-slate-400 font-medium tracking-wide">Ministry of Planning and Budget</span>
+        </div>
+      </a>
+
+      <!-- 데스크톱 내비게이션 링크 -->
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-700">
+        <a href="#section-missions" class="hover:text-blue-600 transition-colors py-1">5대 핵심업무</a>
+        <a href="#section-cycle" class="hover:text-blue-600 transition-colors py-1">예산의 1년 여정</a>
+        <a href="#section-budget" class="hover:text-blue-600 transition-colors py-1">나라살림 한눈에</a>
+        <a href="#section-tax" class="hover:text-blue-600 transition-colors py-1">내 세금 영수증</a>
+        <a href="#section-citizen" class="hover:text-blue-600 transition-colors py-1">국민참여예산</a>
+        <a href="#section-glossary" class="hover:text-blue-600 transition-colors py-1">재정 용어사전</a>
+        <a href="#section-quiz" class="hover:text-blue-600 transition-colors py-1">배움터 퀴즈</a>
+      </nav>
+
+      <!-- 우측 빠른 제안 버튼 -->
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="#section-citizen" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+          <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+          <span>예산 아이디어 제안</span>
+        </a>
+      </div>
+
+      <!-- 모바일 햄버거 토글 버튼 -->
+      <button id="mobile-menu-toggle" class="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100" aria-label="메뉴 열기/닫기">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- 모바일 드롭다운 메뉴 -->
+    <div id="mobile-menu-container" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 text-sm font-bold text-slate-800 shadow-xl">
+      <a href="#section-missions" class="block py-2 px-3 rounded-lg hover:bg-slate-50">5대 핵심업무</a>
+      <a href="#section-cycle" class="block py-2 px-3 rounded-lg hover:bg-slate-50">예산의 1년 여정</a>
+      <a href="#section-budget" class="block py-2 px-3 rounded-lg hover:bg-slate-50">나라살림 한눈에</a>
+      <a href="#section-tax" class="block py-2 px-3 rounded-lg hover:bg-slate-50">내 세금 영수증</a>
+      <a href="#section-citizen" class="block py-2 px-3 rounded-lg hover:bg-slate-50">국민참여예산</a>
+      <a href="#section-glossary" class="block py-2 px-3 rounded-lg hover:bg-slate-50">재정 용어사전</a>
+      <a href="#section-quiz" class="block py-2 px-3 rounded-lg hover:bg-slate-50">배움터 퀴즈</a>
+      <a href="#section-waste" class="block py-2 px-3 rounded-lg text-red-600 bg-red-50">🚨 예산낭비 신고센터</a>
+    </div>
+  </header>
+
+  <!-- 메인 콘텐츠 영역 시작 -->
+  <main id="main-content">
+
+    <!-- 히어로 섹션 (Hero Section) -->
+    <section class="hero-gradient text-white pt-12 pb-16 lg:pt-20 lg:pb-24 px-4 lg:px-8 relative">
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-bold mb-4">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>국민을 위한 투명하고 공정한 재정 운용</span>
+          </div>
+
+          <h2 class="text-3xl lg:text-5xl font-black tracking-tight leading-tight mb-4 text-white">
+            국민과 함께 설계하는 든든한 나라살림,<br>
+            <span class="text-blue-300">지속가능한 대한민국</span>을 만듭니다.
+          </h2>
+
+          <p class="text-base lg:text-xl text-slate-200 font-normal leading-relaxed mb-8">
+            기획예산처는 우리 집 가계부를 꼼꼼히 쓰듯, 대한민국 한 해 살림(예산)을 빈틈없이 계획하고
+            국민의 소중한 세금이 꼭 필요한 곳에 공정하게 쓰이도록 조율하는 중앙행정기관입니다.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="#section-tax" class="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-900/50 flex items-center gap-2 transition-all">
+              <i data-lucide="receipt" class="w-4 h-4"></i> 내 세금 영수증 확인하기
+            </a>
+            <a href="#section-missions" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-bold text-sm backdrop-blur transition-all flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4"></i> 주요업무 알기 쉽게 보기
+            </a>
+            <a href="#section-cycle" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-bold text-sm backdrop-blur transition-all flex items-center gap-2">
+              <i data-lucide="calendar" class="w-4 h-4"></i> 예산 1년 여정 타임라인
+            </a>
+          </div>
+        </div>
+
+        <!-- 주요 국정 재정 지표 4선 카드 -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 pt-8 border-t border-white/10">
+          <div class="bg-white/5 backdrop-blur border border-white/10 p-4 lg:p-5 rounded-2xl">
+            <div class="text-xs text-slate-300 mb-1 flex items-center gap-1.5 font-medium">
+              <i data-lucide="wallet" class="w-4 h-4 text-blue-300"></i> 2026년 총예산 규모
+            </div>
+            <div class="text-xl lg:text-3xl font-black font-mono text-white">677.4조 원</div>
+            <span class="text-[11px] text-emerald-400 font-medium">+3.2% (전년 대비 안정 편성)</span>
+          </div>
+
+          <div class="bg-white/5 backdrop-blur border border-white/10 p-4 lg:p-5 rounded-2xl">
+            <div class="text-xs text-slate-300 mb-1 flex items-center gap-1.5 font-medium">
+              <i data-lucide="users" class="w-4 h-4 text-amber-300"></i> 국민참여예산 반영액
+            </div>
+            <div class="text-xl lg:text-3xl font-black font-mono text-white">1,250억 원</div>
+            <span class="text-[11px] text-amber-300 font-medium">국민 제안 84개 사업 확정</span>
+          </div>
+
+          <div class="bg-white/5 backdrop-blur border border-white/10 p-4 lg:p-5 rounded-2xl">
+            <div class="text-xs text-slate-300 mb-1 flex items-center gap-1.5 font-medium">
+              <i data-lucide="shield-check" class="w-4 h-4 text-purple-300"></i> 예타 및 재정 효율화
+            </div>
+            <div class="text-xl lg:text-3xl font-black font-mono text-white">4.8조 원</div>
+            <span class="text-[11px] text-purple-300 font-medium">선심성 낭비 지출 원천 차단</span>
+          </div>
+
+          <div class="bg-white/5 backdrop-blur border border-white/10 p-4 lg:p-5 rounded-2xl">
+            <div class="text-xs text-slate-300 mb-1 flex items-center gap-1.5 font-medium">
+              <i data-lucide="building-2" class="w-4 h-4 text-sky-300"></i> 공공기관 경영혁신
+            </div>
+            <div class="text-xl lg:text-3xl font-black font-mono text-white">318개 기관</div>
+            <span class="text-[11px] text-sky-300 font-medium">대국민 서비스 품질 제고</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 1] 기획예산처 5대 핵심 업무 (알기 쉬운 인터랙티브 탭) -->
+    <section id="section-missions" class="py-16 lg:py-24 px-4 lg:px-8 bg-slate-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="text-xs font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-full uppercase tracking-wider">
+            CORE MISSIONS & RESPONSIBILITIES
+          </span>
+          <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-4">
+            기획예산처는 어떤 일을 하나요?
+          </h2>
+          <p class="text-slate-600 text-sm lg:text-base leading-relaxed">
+            국민의 눈높이에 맞춰 일상 속 비유로 쉽게 풀어드리는 기획예산처의 5가지 핵심 역할입니다.
+            각 탭을 클릭하여 상세한 내용과 나에게 돌아오는 혜택을 확인해 보세요.
+          </p>
+        </div>
+
+        <!-- 업무 선택 탭 네비게이션 -->
+        <div id="mission-tabs-nav" class="flex flex-wrap items-center justify-center gap-2 mb-8">
+          <!-- JS가 탭 버튼들을 동적으로 생성 -->
+        </div>
+
+        <!-- 선택된 탭 상세 콘텐츠 뷰어 -->
+        <div id="mission-tab-content" class="max-w-4xl mx-auto">
+          <!-- JS가 선택된 업무의 상세 내용(비유, 세부업무, 국민혜택) 렌더링 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 2] 봄부터 겨울까지, 예산의 1년 여정 (인터랙티브 캘린더 타임라인) -->
+    <section id="section-cycle" class="py-16 lg:py-24 px-4 lg:px-8 bg-white border-y border-slate-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-4">
+          <div>
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">
+              1-YEAR BUDGET LIFECYCLE
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-2">
+              대한민국 1년 예산은 어떻게 만들어질까요?
+            </h2>
+            <p class="text-slate-600 text-sm lg:text-base">
+              매년 1월 정부 지침 마련부터 12월 국회 최종 확정까지, 치열한 7단계 과정을 한눈에 확인하세요.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs font-medium text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200 shrink-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+            <span>정부(기획예산처) 편성</span>
+            <span class="text-slate-300">|</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+            <span>국회 심의·의결</span>
+            <span class="text-slate-300">|</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            <span>집행 및 결산</span>
+          </div>
+        </div>
+
+        <!-- 7단계 그리드 카드 컨테이너 -->
+        <div id="budget-cycle-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- JS에서 순서대로 렌더링 -->
+        </div>
+
+        <!-- 헌법상 견제와 균형 안내 배너 -->
+        <div class="mt-8 p-5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-blue-600 text-white rounded-xl shrink-0">
+              <i data-lucide="scale" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">왜 정부가 예산을 다 짜고도 국회의 승인을 받아야 하나요?</h4>
+              <p class="text-xs text-slate-600 mt-0.5">
+                대한민국 헌법 제54조에 따라, 국민이 낸 세금의 쓰임새는 반드시 국민의 대표인 국회의 철저한 심의와 표결을 거쳐야만 최종 확정됩니다. (재정 민주주의 원칙)
+              </p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-blue-800 bg-white px-3 py-1.5 rounded-lg border border-blue-200 shrink-0">
+            헌법 제54조 준수
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 3] 한눈에 보는 2026 나라살림 (Chart.js 인터랙티브 차트) -->
+    <section id="section-budget" class="py-16 lg:py-24 px-4 lg:px-8 bg-slate-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-wider">
+            2026 NATIONAL BUDGET VISUALIZER
+          </span>
+          <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-4">
+            한눈에 보는 대한민국 나라살림 (총 677.4조 원)
+          </h2>
+          <p class="text-slate-600 text-sm lg:text-base leading-relaxed">
+            대한민국 1년 예산은 어디에 가장 많이 쓰일까요? 차트의 각 분야를 클릭하여
+            내 삶과 직결된 세부 지원 사업을 바로 탐색해 보세요.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- 도넛 차트 영역 (좌측 5칸) -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center">
+            <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-1.5">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-blue-600"></i> 2026년 분야별 예산 비중 (도넛 차트)
+            </h3>
+            <div class="relative w-full h-72">
+              <canvas id="budgetDonutChart"></canvas>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-4 text-center">
+              * 차트 조각 또는 아래 목록을 클릭하면 우측에 세부 사업 내용이 표시됩니다.
+            </p>
+          </div>
+
+          <!-- 차트 레전드 및 세부 내용 영역 (우측 7칸) -->
+          <div class="lg:col-span-7 space-y-6">
+            <!-- 클릭 시 세부 설명 카드 -->
+            <div id="budget-detail-card" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[220px]">
+              <!-- JS에서 클릭된 분야의 상세 내용 렌더링 -->
+            </div>
+
+            <!-- 분야별 퀵 선택 그리드 -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">분야별 예산 바로 선택하기</h4>
+              <div id="budget-chart-legend" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <!-- JS에서 레전드 버튼 렌더링 -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 4] 내 세금은 어디에 쓰일까? (대화형 영수증 시뮬레이터) -->
+    <section id="section-tax" class="py-16 lg:py-24 px-4 lg:px-8 bg-white border-y border-slate-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <!-- 좌측 입력 패널 -->
+          <div class="lg:col-span-6 space-y-6">
+            <div>
+              <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">
+                INTERACTIVE TAX SIMULATOR
+              </span>
+              <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-3">
+                내가 낸 세금은 어디로 갈까?<br>
+                <span class="text-blue-600">'나라살림 영수증'</span> 발급기
+              </h2>
+              <p class="text-slate-600 text-sm lg:text-base leading-relaxed">
+                나의 월급이나 연봉을 입력하시면, 내가 납부한 소득세가 기초연금, 학교 교육,
+                국방 안보, 대중교통 등에 각각 몇 원씩 쓰였는지 투명한 영수증으로 뽑아드립니다.
+              </p>
+            </div>
+
+            <!-- 입력 폼 카드 -->
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
+              <div>
+                <label for="tax-user-name" class="block text-xs font-bold text-slate-700 mb-1">
+                  이름 (영수증에 표시될 이름)
+                </label>
+                <input type="text" id="tax-user-name" value="홍길동" placeholder="이름을 입력하세요" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label for="salary-input" class="block text-xs font-bold text-slate-700 mb-1">
+                  연간 총 급여액 (연봉, 단위: 만 원)
+                </label>
+                <div class="relative">
+                  <input type="number" id="salary-input" value="5000" min="1000" max="50000" step="100" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none pr-14">
+                  <span class="absolute right-4 top-2.5 text-xs text-slate-400 font-bold">만 원</span>
+                </div>
+              </div>
+
+              <!-- 퀵 연봉 선택 프리셋 버튼 -->
+              <div>
+                <span class="text-xs text-slate-500 font-medium block mb-2">자주 찾는 연봉 구간:</span>
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="quick-salary-btn px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:border-blue-500 hover:text-blue-600 transition-colors" data-val="3500">3,500만 원 (청년)</button>
+                  <button type="button" class="quick-salary-btn px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:border-blue-500 hover:text-blue-600 transition-colors" data-val="5000">5,000만 원 (평균)</button>
+                  <button type="button" class="quick-salary-btn px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:border-blue-500 hover:text-blue-600 transition-colors" data-val="7500">7,500만 원 (중견)</button>
+                  <button type="button" class="quick-salary-btn px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold hover:border-blue-500 hover:text-blue-600 transition-colors" data-val="10000">1억 원 (책임)</button>
+                </div>
+              </div>
+
+              <button id="btn-calc-tax" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <i data-lucide="calculator" class="w-4 h-4"></i> 내 세금 쓰임새 즉시 계산하기
+              </button>
+            </div>
+
+            <div class="flex items-start gap-2 text-xs text-slate-500">
+              <i data-lucide="info" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+              <span>* 1인 가구 근로소득 간이세액표 및 표준세액공제를 적용한 근사치 계산으로, 개인별 부양가족 및 추가 공제에 따라 실제 납부세액과 다를 수 있습니다.</span>
+            </div>
+          </div>
+
+          <!-- 우측 영수증 출력 뷰어 -->
+          <div class="lg:col-span-6">
+            <div id="tax-receipt-output">
+              <!-- JS에서 계산 결과 영수증 렌더링 -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 5] 국민참여예산 제안 체험 & 예산낭비 신고센터 -->
+    <section id="section-citizen" class="py-16 lg:py-24 px-4 lg:px-8 bg-slate-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider">
+            CITIZEN PARTICIPATION & OPEN GOVERNANCE
+          </span>
+          <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-4">
+            국민이 직접 만드는 예산, 국민이 감시하는 재정
+          </h2>
+          <p class="text-slate-600 text-sm lg:text-base leading-relaxed">
+            "이런 정책에 나랏돈을 쓰면 좋겠어요!" 여러분의 반짝이는 아이디어가 실제 국가 예산이 됩니다.
+            직접 아이디어를 제안해 보고 가상 심사 프로세스를 체험해 보세요.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+          <!-- 좌측: 국민참여예산 제안서 양식 -->
+          <div class="lg:col-span-7 bg-white p-6 lg:p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="p-2 rounded-lg bg-purple-100 text-purple-700">
+                  <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </span>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-lg">국민참여예산 온라인 제안 체험하기</h3>
+                  <p class="text-xs text-slate-400">간단한 아이디어 입력으로 실제 심사 절차를 시뮬레이션합니다.</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">
+                연중 상시 접수
+              </span>
+            </div>
+
+            <form id="citizen-proposal-form" class="space-y-4">
+              <div>
+                <label for="prop-title" class="block text-xs font-bold text-slate-700 mb-1">
+                  제안 제목 (필수)
+                </label>
+                <input type="text" id="prop-title" placeholder="예: 어두운 골목길 안심 스마트 보안등 확대 설치" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none" required>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="prop-category" class="block text-xs font-bold text-slate-700 mb-1">
+                    희망 지원 분야
+                  </label>
+                  <select id="prop-category" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none bg-white">
+                    <option value="보건·복지·돌봄">보건·복지·돌봄</option>
+                    <option value="생활안전·교통" selected>생활안전·교통</option>
+                    <option value="청년·일자리·교육">청년·일자리·교육</option>
+                    <option value="환경·탄소중립">환경·탄소중립</option>
+                    <option value="문화·체육·관광">문화·체육·관광</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="prop-budget" class="block text-xs font-bold text-slate-700 mb-1">
+                    추정 필요 예산
+                  </label>
+                  <select id="prop-budget" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none bg-white">
+                    <option value="10억 원 미만 (소규모 생활밀착형)">10억 원 미만 (소규모 생활밀착형)</option>
+                    <option value="10억 ~ 50억 원 (시·군·구 단위 확대)" selected>10억 ~ 50억 원 (시·군·구 단위 확대)</option>
+                    <option value="50억 ~ 100억 원 (전국 단위 공공사업)">50억 ~ 100억 원 (전국 단위 공공사업)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="prop-desc" class="block text-xs font-bold text-slate-700 mb-1">
+                  제안 배경 및 기대 효과 (필수)
+                </label>
+                <textarea id="prop-desc" rows="3" placeholder="일상에서 느낀 불편함과 이 사업이 시행되면 국민들의 삶이 어떻게 좋아질지 적어주세요." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none" required>야간 보행 시 안전사고와 범죄를 예방하기 위해 조도 센서와 비상벨이 결합된 스마트 LED 보안등을 전국 취약 골목에 보급해 주세요.</textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-4 h-4"></i> 국민참여예산 제안서 제출 및 심사 시작
+              </button>
+            </form>
+          </div>
+
+          <!-- 우측: 국민참여예산으로 실제 탄생한 베스트 정책 4선 -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h4 class="font-extrabold text-slate-900 text-base flex items-center gap-1.5">
+                <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> 국민의 아이디어로 바뀐 대한민국
+              </h4>
+              <span class="text-xs text-slate-400">실제 채택 사례</span>
+            </div>
+
+            <div id="proposal-stories-container" class="space-y-3">
+              <!-- JS에서 실제 채택 사례 카드 렌더링 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단: 예산낭비 신고센터 & 성과금 안내 -->
+        <div id="section-waste" class="bg-white rounded-3xl p-6 lg:p-10 border-2 border-red-200 shadow-sm relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-100/50 rounded-full pointer-events-none"></div>
+
+          <div class="max-w-4xl relative z-10">
+            <div class="flex items-center gap-2 text-xs font-bold text-red-600 uppercase tracking-wider mb-2">
+              <i data-lucide="alert-octagon" class="w-4 h-4"></i> BUDGET WASTE REPORTING SYSTEM
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-black text-slate-900 mb-3">
+              나랏돈이 낭비되는 현장을 목격하셨나요?
+            </h3>
+            <p class="text-slate-600 text-sm lg:text-base leading-relaxed mb-6">
+              정부 보조금을 허위로 수령하거나, 무리한 토목 공사로 세금이 새어 나가는 사례를 증빙과 함께 신고해 주세요.
+              기획예산처가 엄정히 조사하여 예산을 환수하며, 지출 절감에 기여한 국민께 <strong>최대 6억 원의 성과금</strong>을 지급합니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div class="p-4 rounded-xl bg-red-50/50 border border-red-100">
+                <div class="font-bold text-red-900 text-sm mb-1 flex items-center gap-1.5">
+                  <i data-lucide="lock" class="w-4 h-4 text-red-600"></i> 철저한 비밀 보장
+                </div>
+                <p class="text-xs text-slate-600">신고자의 신원과 제보 내용은 공익신고자보호법에 의해 100% 비밀이 보장됩니다.</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-red-50/50 border border-red-100">
+                <div class="font-bold text-red-900 text-sm mb-1 flex items-center gap-1.5">
+                  <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-red-600"></i> 최대 6억 원 포상
+                </div>
+                <p class="text-xs text-slate-600">낭비된 세금이 실제 환수되거나 예산이 절약된 경우 환수액의 일정 비율을 지급합니다.</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-red-50/50 border border-red-100">
+                <div class="font-bold text-red-900 text-sm mb-1 flex items-center gap-1.5">
+                  <i data-lucide="phone-call" class="w-4 h-4 text-red-600"></i> 예산낭비 핫라인
+                </div>
+                <p class="text-xs text-slate-600">전화 국번없이 <strong>1577-1242</strong> 또는 온라인 기획예산처 신고센터 이용</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <a href="tel:15771242" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                <i data-lucide="phone" class="w-3.5 h-3.5"></i> 예산낭비 신고전화 (1577-1242)
+              </a>
+              <button onclick="alert('온라인 예산낭비 신고센터(국민권익위 청렴포털 및 기획예산처) 접수창으로 연결됩니다.')" class="px-5 py-2.5 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1.5">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> 온라인 낭비신고 접수
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- [섹션 6] 알기 쉬운 재정 용어사전 (실시간 검색 & 필터) -->
+    <section id="section-glossary" class="py-16 lg:py-24 px-4 lg:px-8 bg-white border-y border-slate-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">
+            SMART FISCAL GLOSSARY
+          </span>
+          <h2 class="text-3xl lg:text-4xl font-black text-slate-900 mt-3 mb-4">
+            어려운 나랏돈 용어, 초등학생도 알기 쉽게!
+          </h2>
+          <p class="text-slate-600 text-sm lg:text-base leading-relaxed">
+            뉴스에서 맨날 나오는 '예타', '추경', '재정준칙'이 무슨 뜻인지 궁금하셨죠?
+            친절한 1줄 비유와 쉬운 설명으로 풀어드립니다.
+          </p>
+        </div>
+
+        <!-- 검색창 및 카테고리 필터 바 -->
+        <div class="max-w-2xl mx-auto mb-8 space-y-4">
+          <div class="relative">
+            <input type="text" id="glossary-search-input" placeholder="궁금한 재정 용어를 검색해 보세요 (예: 예타, 추경, 빚, 보조금)" class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-slate-200 text-sm focus:border-blue-500 focus:outline-none shadow-sm">
+            <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-4 top-3.5"></i>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-1.5">
+            <button class="glossary-filter-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-600 text-white transition-all" data-cat="전체">전체</button>
+            <button class="glossary-filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:border-blue-300 transition-all" data-cat="사업심의">사업심의 (예타)</button>
+            <button class="glossary-filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:border-blue-300 transition-all" data-cat="예산일반">예산일반</button>
+            <button class="glossary-filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:border-blue-300 transition-all" data-cat="재정건전성">재정건전성 (빚·준칙)</button>
+            <button class="glossary-filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:border-blue-300 transition-all" data-cat="국민참여">국민참여</button>
+            <button class="glossary-filter-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:border-blue-300 transition-all" data-cat="예산편성">예산편성 기법</button>
+          </div>
+        </div>
+
+        <!-- 용어 카드 그리드 리스트 -->
+        <div id="glossary-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- JS에서 검색 및 필터링 결과 렌더링 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 7] 자주 묻는 질문 (FAQ) -->
+    <section class="py-16 lg:py-24 px-4 lg:px-8 bg-slate-50">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-10">
+          <span class="text-xs font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-full uppercase tracking-wider">
+            FREQUENTLY ASKED QUESTIONS
+          </span>
+          <h2 class="text-3xl font-black text-slate-900 mt-3 mb-2">
+            국민들이 가장 많이 물어보는 질문 (FAQ)
+          </h2>
+          <p class="text-slate-600 text-sm">
+            기획예산처의 역할과 국가 예산 운용에 대해 평소 궁금했던 점을 속 시원히 답해드립니다.
+          </p>
+        </div>
+
+        <div id="faq-accordion-container" class="space-y-3">
+          <!-- JS에서 아코디언 생성 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- [섹션 8] 어린이·청소년 재정 배움터 & OX 퀴즈 -->
+    <section id="section-quiz" class="py-16 lg:py-24 px-4 lg:px-8 bg-gradient-to-b from-blue-900 to-gov-navy text-white relative">
+      <div class="max-w-4xl mx-auto relative z-10">
+        <div class="text-center mb-10">
+          <span class="text-xs font-bold text-amber-300 bg-amber-400/20 px-3 py-1 rounded-full uppercase tracking-wider border border-amber-400/30">
+            YOUTH & CITIZEN FISCAL ACADEMY
+          </span>
+          <h2 class="text-3xl lg:text-4xl font-black text-white mt-3 mb-3">
+            알쏭달쏭 나라살림 O/X 퀴즈!
+          </h2>
+          <p class="text-slate-300 text-sm lg:text-base">
+            퀴즈를 모두 풀면 기획예산처가 발행하는 <strong>'명예 예산지킴이 위촉장'</strong>을 드립니다!
+          </p>
+        </div>
+
+        <div id="quiz-card-container">
+          <!-- JS에서 인터랙티브 퀴즈 카드 렌더링 -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 가상 제안 완료 모달 다이얼로그 -->
+  <div id="proposal-simulation-modal" class="modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content bg-white w-full max-w-lg rounded-2xl p-6 lg:p-8 shadow-2xl border border-slate-200 relative">
+      <button id="proposal-modal-close" class="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="창 닫기">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div id="proposal-modal-body">
+        <!-- JS에서 모달 내용 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 푸터 (공식 대한민국 정부 표준 푸터) -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-12 px-4 lg:px-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto space-y-8">
+      
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-white font-bold">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14M9 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v11"/>
+            </svg>
+          </div>
+          <div>
+            <span class="text-white font-bold text-sm">대한민국 기획예산처</span>
+            <p class="text-slate-500 text-[11px]">Ministry of Planning and Budget</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 text-slate-300">
+          <a href="#" class="hover:text-white font-bold">개인정보처리방침</a>
+          <span class="text-slate-700">|</span>
+          <a href="#" class="hover:text-white">이용약관</a>
+          <span class="text-slate-700">|</span>
+          <a href="#" class="hover:text-white">웹접근성정책</a>
+          <span class="text-slate-700">|</span>
+          <a href="#section-waste" class="text-red-400 hover:text-red-300 font-bold">예산낭비신고센터</a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 leading-relaxed">
+        <div>
+          <p class="text-slate-300 font-semibold mb-1">정부세종청사 기획예산처 본부</p>
+          <p>(30103) 세종특별자치시 도움6로 42 정부세종청사 기획예산처</p>
+          <p>대표전화: 044-215-2114 (평일 09:00~18:00) | 팩스: 044-215-7000</p>
+          <p>예산낭비신고 핫라인: 국번없이 1577-1242 | 국민참여예산 문의: 044-215-5382</p>
+        </div>
+
+        <div class="md:text-right space-y-2">
+          <div class="inline-flex items-center gap-2 p-2 rounded bg-slate-800 text-[11px] text-slate-300">
+            <span>공공누리 제1유형: 출처표시 조건 무료이용 가능</span>
+          </div>
+          <p class="text-[11px] text-slate-500">
+            본 사이트의 모든 저작권은 대한민국 기획예산처에 있으며, 무단 전재 및 배포를 금합니다.<br>
+            © Ministry of Planning and Budget. Republic of Korea. All Rights Reserved.
+          </p>
+        </div>
+      </div>
+
+      <!-- 관련 공공 포털 바로가기 셀렉트 -->
+      <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-slate-500 text-[11px]">
+        <span>관련 정부 누리집:</span>
+        <div class="flex flex-wrap gap-3">
+          <a href="https://www.gov.kr" target="_blank" rel="noopener" class="hover:text-slate-300">정부24</a>
+          <a href="https://www.openfiscaldata.go.kr" target="_blank" rel="noopener" class="hover:text-slate-300">열린재정</a>
+          <a href="https://www.mybudget.go.kr" target="_blank" rel="noopener" class="hover:text-slate-300">국민참여예산</a>
+          <a href="https://www.nabo.go.kr" target="_blank" rel="noopener" class="hover:text-slate-300">국회예산정책처</a>
+          <a href="https://www.kdi.re.kr" target="_blank" rel="noopener" class="hover:text-slate-300">한국개발연구원(KDI)</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- 포털 인터랙티브 JS 스크립트 -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Lucide 아이콘 초기 렌더링
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
